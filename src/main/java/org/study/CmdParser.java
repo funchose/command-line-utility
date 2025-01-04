@@ -45,43 +45,32 @@ public class CmdParser {
     }
   }
 
-
-  public void work() throws IOException {
+  public void parseCommand() throws IOException {
     for (String file : files) {
       parseFlags();
       fileHandler.readFile(file);
-      if (!fileHandler.getIntegers().isEmpty()) {
-        String filename = fileHandler.getPrefix() + "integers.txt";
+      fileHandler.getScanner().close();
+      for (String list : fileHandler.existingLists) {
+        String filename = fileHandler.getPrefix() + list + ".txt";
         try {
           fileHandler.createFile(fileHandler.getDirectoryPath(), filename);
         } catch (Exception e) {
-          System.out.println("IO exception occurred");
-        }
-        fileHandler.setWriter(new FileWriter(
-            fileHandler.getDirectoryPath() + filename,true));
-        fileHandler.writeIntegers();
-      }
-      if (!fileHandler.getDoubles().isEmpty()) {
-        String filename = fileHandler.getPrefix() + "floats.txt";
-        try {
-          fileHandler.createFile(fileHandler.getDirectoryPath(), filename);
-        } catch (Exception e) {
-          System.out.println("IO exception occurred");
+          System.out.println(e.getLocalizedMessage());
         }
         fileHandler.setWriter(new FileWriter(
             fileHandler.getDirectoryPath() + filename, true));
-        fileHandler.writeDoubles();
-      }
-      if (!fileHandler.getStrings().isEmpty()) {
-        String filename = fileHandler.getPrefix() + "strings.txt";
-        try {
-          fileHandler.createFile(fileHandler.getDirectoryPath(), filename);
-        } catch (Exception e) {
-          System.out.println("IO exception occurred");
+        switch (list) {
+          case "integers":
+            fileHandler.writeIntegers();
+            break;
+          case "floats":
+            fileHandler.writeDoubles();
+            break;
+          case "strings":
+            fileHandler.writeStrings();
+            break;
         }
-        fileHandler.setWriter(new FileWriter(
-            fileHandler.getDirectoryPath() + filename, true));
-        fileHandler.writeStrings();
+        fileHandler.getWriter().close();
       }
     }
   }

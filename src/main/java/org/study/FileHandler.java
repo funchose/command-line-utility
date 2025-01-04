@@ -6,12 +6,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 public class FileHandler {
+
+  public Set<String> getExistingLists() {
+    return existingLists;
+  }
+
+  public Set<String> existingLists;
   private List<Integer> integers;
   private List<Double> doubles;
   private List<String> strings;
@@ -26,6 +29,7 @@ public class FileHandler {
     this.integers = new ArrayList<>();
     this.doubles = new ArrayList<>();
     this.strings = new ArrayList<>();
+    this.existingLists = new HashSet<>();
     this.directoryPath = "";
     this.prefix = "";
   }
@@ -80,10 +84,13 @@ public class FileHandler {
     while (scanner.hasNextLine()) {
       if (scanner.hasNextInt()) {
         integers.add(Integer.parseInt(scanner.nextLine()));
+        existingLists.add("integers");
       } else if (scanner.hasNextDouble()) {
         doubles.add(Double.parseDouble(scanner.nextLine()));
+        existingLists.add("floats");
       } else {
         strings.add(scanner.nextLine());
+        existingLists.add("strings");
       }
     }
   }
@@ -98,20 +105,17 @@ public class FileHandler {
     for (Integer integer : integers) {
       writer.append(String.format("%d%n", integer));
     }
-    writer.close();
   }
 
   public void writeDoubles() throws IOException {
     for (Double doubleNum : doubles) {
       writer.append(String.format("%f%n", doubleNum));
     }
-    writer.close();
   }
 
   public void writeStrings() throws IOException {
     for (String string : strings) {
       writer.append(String.format("%s%n", string));
     }
-    writer.close();
   }
 }

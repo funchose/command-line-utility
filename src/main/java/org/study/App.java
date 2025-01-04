@@ -8,7 +8,7 @@ public class App {
 
     try {
       CmdParser parser = new CmdParser(args);
-      parser.work();
+      parser.parseCommand();
     } catch (ParseException | IOException e) {
       System.out.println(e.getLocalizedMessage());
     }
