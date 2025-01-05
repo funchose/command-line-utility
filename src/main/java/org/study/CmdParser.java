@@ -8,15 +8,30 @@ import org.apache.commons.cli.*;
 public class CmdParser {
   private final Options options = new Options();
   private final CommandLine cmd;
-  private final FileHandler fileHandler;
+
+  private FileHandler fileHandler;
+
   private final List<String> files;
+  private boolean appendMode;
+
+  public void setFileHandler(FileHandler fileHandler) {
+    this.fileHandler = fileHandler;
+  }
+
+  public boolean isAppendMode() {
+    return appendMode;
+  }
+
+  public void setAppendMode(boolean appendMode) {
+    this.appendMode = appendMode;
+  }
 
   public CmdParser(String[] args) throws ParseException {
     createCmdOptions();
     CommandLineParser parser = new DefaultParser();
     this.cmd = parser.parse(options, args);
     this.files = cmd.getArgList();
-    this.fileHandler = new FileHandler();
+    this.appendMode = false;
   }
 
   public void createCmdOptions() {
@@ -34,20 +49,20 @@ public class CmdParser {
     }
     if (cmd.hasOption("p")) {
       fileHandler.setPrefix(cmd.getOptionValue("p"));
-//    } if (cmd.hasOption("a")) {
-//      fileHandler.chooseAppendMode();
+    }
+    if (cmd.hasOption("a")) {
+      setAppendMode(true);
 //    } if (cmd.hasOption("s")) {
 //      fileHandler.showShortStatistics();
 //    } if (cmd.hasOption("f")) {
 //      fileHandler.showFullStatistics();
-    } else {
-      //fileHandler.chooseOverwritingMode();
     }
   }
 
   public void parseCommand() throws IOException {
+    parseFlags();
     for (String file : files) {
-      parseFlags();
+      setFileHandler(new FileHandler());
       fileHandler.readFile(file);
       fileHandler.getScanner().close();
       for (String list : fileHandler.existingLists) {
@@ -58,7 +73,7 @@ public class CmdParser {
           System.out.println(e.getLocalizedMessage());
         }
         fileHandler.setWriter(new FileWriter(
-            fileHandler.getDirectoryPath() + filename, true));
+            fileHandler.getDirectoryPath() + filename, isAppendMode()));
         switch (list) {
           case "integers":
             fileHandler.writeIntegers();

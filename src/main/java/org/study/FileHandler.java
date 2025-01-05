@@ -21,6 +21,7 @@ public class FileHandler {
   private String directoryPath;
   private String prefix;
 
+
   private Scanner scanner;
 
   private FileWriter writer;
