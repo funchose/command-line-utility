@@ -21,7 +21,6 @@ public class FileHandler {
   private String directoryPath;
   private String prefix;
 
-
   private Scanner scanner;
 
   private FileWriter writer;
@@ -102,21 +101,27 @@ public class FileHandler {
     file.createNewFile();
   }
 
-  public void writeIntegers() throws IOException {
+  public void writeIntegers(Statistics statistics) throws IOException {
     for (Integer integer : integers) {
       writer.append(String.format("%d%n", integer));
+      statistics.getIntsStatistics(integer);
     }
   }
 
-  public void writeDoubles() throws IOException {
+
+  public void writeDoubles(Statistics statistics) throws IOException {
     for (Double doubleNum : doubles) {
       writer.append(String.format("%f%n", doubleNum));
     }
   }
 
-  public void writeStrings() throws IOException {
+  public void writeStrings(Statistics statistics) throws IOException {
     for (String string : strings) {
       writer.append(String.format("%s%n", string));
     }
+  }
+
+  public void getShortStatistics() {
+
   }
 }
