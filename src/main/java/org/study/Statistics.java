@@ -14,6 +14,7 @@ public class Statistics {
   private double intsAvg = 0;
   private int minStrSize;
   private int maxStrSize;
+
   public Statistics(FileHandler fileHandler) {
     if (fileHandler.getExistingLists().contains("integers")) {
       this.intsMin = fileHandler.getIntegers().getFirst();
@@ -28,6 +29,7 @@ public class Statistics {
       this.maxStrSize = fileHandler.getStrings().getFirst().length();
     }
   }
+
   public double getDoublesMin() {
     return doublesMin;
   }
@@ -50,14 +52,6 @@ public class Statistics {
 
   public void setDoublesSum(double doublesSum) {
     this.doublesSum = doublesSum;
-  }
-
-  public double getDoublesAvg() {
-    return doublesAvg;
-  }
-
-  public void setDoublesAvg(double doublesAvg) {
-    this.doublesAvg = doublesAvg;
   }
 
   public int getNumberOfStrings() {
@@ -148,6 +142,7 @@ public class Statistics {
     System.out.printf("Min integer: %d%nMax integer: %d%nSum: %d%nAverage: %.2f%n",
         intsMin, intsMax, intsSum, intsAvg);
   }
+
   public void collectDoublesStatistics(Double doubleNum) {
     setNumberOfDoubles(getNumberOfDoubles() + 1);
     setDoublesSum(getDoublesSum() + doubleNum);
@@ -171,6 +166,27 @@ public class Statistics {
     printShortDoublesStatistics();
     System.out.printf("Min float: %.2f%nMax float: %.2f%nSum: %.2f%nAverage: %.2f%n",
         doublesMin, doublesMax, doublesSum, doublesAvg);
+
+  }
+
+  public void collectStringsStatistics(String string) {
+    setNumberOfStrings(getNumberOfStrings() + 1);
+    if (string.length() > getMaxStrSize()) {
+      setMaxStrSize(string.length());
+    }
+    if (string.length() < getMinStrSize()) {
+      setMinStrSize(string.length());
+    }
+  }
+
+  public void printShortStringsStatistics() {
+    System.out.printf("Number of strings: %d%n", numberOfStrings);
+  }
+
+  public void printFullStringsStatistics() {
+    printShortStringsStatistics();
+    System.out.printf("Min string length: %d%nMax string length: %d%n",
+        minStrSize, maxStrSize);
 
   }
 }

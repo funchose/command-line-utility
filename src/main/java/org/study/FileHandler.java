@@ -14,10 +14,10 @@ public class FileHandler {
     return existingLists;
   }
 
-  private Set<String> existingLists;
-  private List<Integer> integers;
-  private List<Double> doubles;
-  private List<String> strings;
+  private final Set<String> existingLists;
+  private final List<Integer> integers;
+  private final List<Double> doubles;
+  private final List<String> strings;
   private String directoryPath;
   private String prefix;
 
@@ -118,6 +118,7 @@ public class FileHandler {
   public void writeStrings(Statistics statistics) throws IOException {
     for (String string : strings) {
       writer.append(String.format("%s%n", string));
+      statistics.collectStringsStatistics(string);
     }
   }
 }

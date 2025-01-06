@@ -14,7 +14,6 @@ public class CmdParser {
   private final List<String> files;
 
   private boolean appendMode;
-  private Statistics statistics;
   private StatisticsType type;
 
   public void setFileHandler(FileHandler fileHandler) {
@@ -75,7 +74,7 @@ public class CmdParser {
       fileHandler.readFile(file);
       fileHandler.getScanner().close();
     }
-    statistics = new Statistics(fileHandler);
+    Statistics statistics = new Statistics(fileHandler);
     for (String list : fileHandler.getExistingLists()) {
       String filename = fileHandler.getPrefix() + list + ".txt";
       try {
@@ -87,13 +86,13 @@ public class CmdParser {
           fileHandler.getDirectoryPath() + filename, isAppendMode()));
       switch (list) {
         case "integers":
-          fileHandler.writeIntegers(this.statistics);
+          fileHandler.writeIntegers(statistics);
           break;
         case "floats":
-          fileHandler.writeDoubles(this.statistics);
+          fileHandler.writeDoubles(statistics);
           break;
         case "strings":
-          fileHandler.writeStrings(this.statistics);
+          fileHandler.writeStrings(statistics);
           break;
       }
       statistics.calcIntsAvg();
@@ -105,12 +104,12 @@ public class CmdParser {
       case SHORT -> {
         statistics.printShortIntsStatistics();
         statistics.printShortDoublesStatistics();
-//        statistics.printShortStringsStatistics();
+        statistics.printShortStringsStatistics();
       }
       case FULL -> {
         statistics.printFullIntsStatistics();
         statistics.printFullDoublesStatistics();
-//        statistics.printFullStringsStatistics();
+        statistics.printFullStringsStatistics();
       }
     }
   }
