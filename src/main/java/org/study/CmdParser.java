@@ -1,5 +1,6 @@
 package org.study;
 
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -7,15 +8,12 @@ import org.apache.commons.cli.*;
 
 public class CmdParser {
   private final Options options = new Options();
+  private Statistics statistics;
   private final CommandLine cmd;
-
   private FileHandler fileHandler;
-
   private final List<String> files;
-
   private boolean appendMode;
   private StatisticsType type;
-
   public void setFileHandler(FileHandler fileHandler) {
     this.fileHandler = fileHandler;
   }
@@ -46,6 +44,20 @@ public class CmdParser {
     options.addOption("f", false, "Show full statistics");
   }
 
+  public void parseCommand() throws IOException {
+    parseFlags();
+    fileHandler = new FileHandler();
+    readFiles();
+    statistics = new Statistics(fileHandler);
+    for (String list : fileHandler.getExistingLists()) {
+      createOutputFile(list);
+      writeDataToFile(list);
+      fileHandler.getWriter().close();
+    }
+    statistics.calculateAvg();
+    printStatistics(type);
+  }
+
   public void parseFlags() {
     if (cmd.hasOption("o")) {
       fileHandler.setDirectoryPath(cmd.getOptionValue("o"));
@@ -64,9 +76,7 @@ public class CmdParser {
     }
   }
 
-  public void parseCommand() throws IOException {
-    parseFlags();
-    setFileHandler(new FileHandler());
+  private void readFiles() throws FileNotFoundException {
     for (String file : files) {
       if (!isAppendMode()) {
         setFileHandler(new FileHandler());
@@ -74,42 +84,56 @@ public class CmdParser {
       fileHandler.readFile(file);
       fileHandler.getScanner().close();
     }
-    Statistics statistics = new Statistics(fileHandler);
-    for (String list : fileHandler.getExistingLists()) {
-      String filename = fileHandler.getPrefix() + list + ".txt";
-      try {
-        fileHandler.createFile(fileHandler.getDirectoryPath(), filename);
-      } catch (Exception e) {
-        System.out.println(e.getLocalizedMessage());
-      }
-      fileHandler.setWriter(new FileWriter(
-          fileHandler.getDirectoryPath() + filename, isAppendMode()));
-      switch (list) {
-        case "integers":
-          fileHandler.writeIntegers(statistics);
-          break;
-        case "floats":
-          fileHandler.writeDoubles(statistics);
-          break;
-        case "strings":
-          fileHandler.writeStrings(statistics);
-          break;
-      }
-      statistics.calcIntsAvg();
-      statistics.calcDoublesAvg();
-      fileHandler.getWriter().close();
-    }
+  }
 
+  private void createOutputFile(String list) throws IOException {
+    String filename = fileHandler.getPrefix() + list + ".txt";
+    try {
+      fileHandler.createFile(fileHandler.getDirectoryPath(), filename);
+    } catch (Exception e) {
+      System.out.println(e.getLocalizedMessage());
+    }
+    fileHandler.setWriter(new FileWriter(
+        fileHandler.getDirectoryPath() + filename, isAppendMode()));
+  }
+
+  private void writeDataToFile(String list) throws IOException {
+    switch (list) {
+      case "integers":
+        fileHandler.writeIntegers(statistics);
+        break;
+      case "floats":
+        fileHandler.writeDoubles(statistics);
+        break;
+      case "strings":
+        fileHandler.writeStrings(statistics);
+        break;
+    }
+  }
+
+  private void printStatistics(StatisticsType type) {
     switch (type) {
       case SHORT -> {
-        statistics.printShortIntsStatistics();
-        statistics.printShortDoublesStatistics();
-        statistics.printShortStringsStatistics();
+        if (fileHandler.getExistingLists().contains("integers")) {
+          statistics.printShortIntsStatistics();
+        }
+        if (fileHandler.getExistingLists().contains("floats")) {
+          statistics.printShortDoublesStatistics();
+        }
+        if (fileHandler.getExistingLists().contains("strings")) {
+          statistics.printShortStringsStatistics();
+        }
       }
       case FULL -> {
-        statistics.printFullIntsStatistics();
-        statistics.printFullDoublesStatistics();
-        statistics.printFullStringsStatistics();
+        if (fileHandler.getExistingLists().contains("integers")) {
+          statistics.printFullIntsStatistics();
+        }
+        if (fileHandler.getExistingLists().contains("floats")) {
+          statistics.printFullDoublesStatistics();
+        }
+        if (fileHandler.getExistingLists().contains("strings")) {
+          statistics.printFullStringsStatistics();
+        }
       }
     }
   }

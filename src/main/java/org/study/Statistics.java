@@ -1,17 +1,17 @@
 package org.study;
 
 public class Statistics {
-  private int numberOfStrings = 0;
-  private int numberOfInts = 0;
-  private int numberOfDoubles = 0;
+  private int numberOfStrings;
+  private int numberOfInts;
+  private int numberOfDoubles;
   private double doublesMin;
   private double doublesMax;
-  private double doublesSum = 0;
-  private double doublesAvg = 0;
+  private double doublesSum;
+  private double doublesAvg;
   private int intsMin;
   private int intsMax;
-  private int intsSum = 0;
-  private double intsAvg = 0;
+  private int intsSum;
+  private double intsAvg;
   private int minStrSize;
   private int maxStrSize;
 
@@ -30,136 +30,67 @@ public class Statistics {
     }
   }
 
-  public double getDoublesMin() {
-    return doublesMin;
-  }
-
-  public void setDoublesMin(double doublesMin) {
-    this.doublesMin = doublesMin;
-  }
-
-  public double getDoublesMax() {
-    return doublesMax;
-  }
-
-  public void setDoublesMax(double doublesMax) {
-    this.doublesMax = doublesMax;
-  }
-
-  public double getDoublesSum() {
-    return doublesSum;
-  }
-
-  public void setDoublesSum(double doublesSum) {
-    this.doublesSum = doublesSum;
-  }
-
-  public int getNumberOfStrings() {
-    return numberOfStrings;
-  }
-
-  public void setNumberOfStrings(int numberOfStrings) {
-    this.numberOfStrings = numberOfStrings;
-  }
-
-  public int getNumberOfInts() {
-    return numberOfInts;
-  }
-
-  public void setNumberOfInts(int numberOfInts) {
-    this.numberOfInts = numberOfInts;
-  }
-
-  public int getNumberOfDoubles() {
-    return numberOfDoubles;
-  }
-
-  public void setNumberOfDoubles(int numberOfFloats) {
-    this.numberOfDoubles = numberOfFloats;
-  }
-
-  public int getIntsMin() {
-    return intsMin;
-  }
-
-  public void setIntsMin(int intsMin) {
-    this.intsMin = intsMin;
-  }
-
-  public int getIntsMax() {
-    return intsMax;
-  }
-
-  public void setIntsMax(int intsMax) {
-    this.intsMax = intsMax;
-  }
-
-  public int getIntsSum() {
-    return intsSum;
-  }
-
-  public void setIntsSum(int intsSum) {
-    this.intsSum = intsSum;
-  }
-
-  public int getMinStrSize() {
-    return minStrSize;
-  }
-
-  public void setMinStrSize(int minStrSize) {
-    this.minStrSize = minStrSize;
-  }
-
-  public int getMaxStrSize() {
-    return maxStrSize;
-  }
-
-  public void setMaxStrSize(int maxStrSize) {
-    this.maxStrSize = maxStrSize;
-  }
-
   public void collectIntsStatistics(Integer integer) {
-    setNumberOfInts(getNumberOfInts() + 1);
-    setIntsSum(getIntsSum() + integer);
-    if (integer > getIntsMax()) {
-      setIntsMax(integer);
+    numberOfInts++;
+    intsSum += integer;
+    if (integer > intsMax) {
+      intsMax = integer;
     }
-    if (integer < getIntsMin()) {
-      setIntsMin(integer);
+    if (integer < intsMin) {
+      intsMin = integer;
     }
   }
 
-  public void calcIntsAvg() {
+  public void collectDoublesStatistics(Double doubleNum) {
+    numberOfDoubles++;
+    doublesSum += doubleNum;
+    if (doubleNum > doublesMax) {
+      doublesMax = doubleNum;
+    }
+    if (doubleNum < doublesMin) {
+      doublesMin = doubleNum;
+    }
+  }
+
+  public void collectStringsStatistics(String string) {
+    numberOfStrings++;
+    if (string.length() > maxStrSize) {
+      maxStrSize = string.length();
+    }
+    if (string.length() < minStrSize) {
+      minStrSize = string.length();
+    }
+  }
+
+  public void calculateAvg() {
+    calcIntsAvg();
+    calcDoublesAvg();
+  }
+
+  private void calcIntsAvg() {
     intsAvg = (double) intsSum / numberOfInts;
+  }
+
+  private void calcDoublesAvg() {
+    doublesAvg = doublesSum / numberOfDoubles;
   }
 
   public void printShortIntsStatistics() {
     System.out.printf("Number of integers: %d%n", numberOfInts);
   }
 
+  public void printShortDoublesStatistics() {
+    System.out.printf("Number of floats: %d%n", numberOfDoubles);
+  }
+
+  public void printShortStringsStatistics() {
+    System.out.printf("Number of strings: %d%n", numberOfStrings);
+  }
+
   public void printFullIntsStatistics() {
     printShortIntsStatistics();
     System.out.printf("Min integer: %d%nMax integer: %d%nSum: %d%nAverage: %.2f%n",
         intsMin, intsMax, intsSum, intsAvg);
-  }
-
-  public void collectDoublesStatistics(Double doubleNum) {
-    setNumberOfDoubles(getNumberOfDoubles() + 1);
-    setDoublesSum(getDoublesSum() + doubleNum);
-    if (doubleNum > getDoublesMax()) {
-      setDoublesMax(doubleNum);
-    }
-    if (doubleNum < getDoublesMin()) {
-      setDoublesMin(doubleNum);
-    }
-  }
-
-  public void calcDoublesAvg() {
-    doublesAvg = doublesSum / numberOfDoubles;
-  }
-
-  public void printShortDoublesStatistics() {
-    System.out.printf("Number of floats: %d%n", numberOfDoubles);
   }
 
   public void printFullDoublesStatistics() {
@@ -169,24 +100,9 @@ public class Statistics {
 
   }
 
-  public void collectStringsStatistics(String string) {
-    setNumberOfStrings(getNumberOfStrings() + 1);
-    if (string.length() > getMaxStrSize()) {
-      setMaxStrSize(string.length());
-    }
-    if (string.length() < getMinStrSize()) {
-      setMinStrSize(string.length());
-    }
-  }
-
-  public void printShortStringsStatistics() {
-    System.out.printf("Number of strings: %d%n", numberOfStrings);
-  }
-
   public void printFullStringsStatistics() {
     printShortStringsStatistics();
     System.out.printf("Min string length: %d%nMax string length: %d%n",
         minStrSize, maxStrSize);
-
   }
 }
