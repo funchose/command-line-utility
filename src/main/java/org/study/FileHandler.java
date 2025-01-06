@@ -14,7 +14,7 @@ public class FileHandler {
     return existingLists;
   }
 
-  public Set<String> existingLists;
+  private Set<String> existingLists;
   private List<Integer> integers;
   private List<Double> doubles;
   private List<String> strings;
@@ -104,14 +104,14 @@ public class FileHandler {
   public void writeIntegers(Statistics statistics) throws IOException {
     for (Integer integer : integers) {
       writer.append(String.format("%d%n", integer));
-      statistics.getIntsStatistics(integer);
+      statistics.collectIntsStatistics(integer);
     }
   }
-
 
   public void writeDoubles(Statistics statistics) throws IOException {
     for (Double doubleNum : doubles) {
       writer.append(String.format("%f%n", doubleNum));
+      statistics.collectDoublesStatistics(doubleNum);
     }
   }
 
@@ -119,9 +119,5 @@ public class FileHandler {
     for (String string : strings) {
       writer.append(String.format("%s%n", string));
     }
-  }
-
-  public void getShortStatistics() {
-
   }
 }

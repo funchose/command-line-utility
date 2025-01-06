@@ -12,8 +12,10 @@ public class CmdParser {
   private FileHandler fileHandler;
 
   private final List<String> files;
+
   private boolean appendMode;
   private Statistics statistics;
+  private StatisticsType type;
 
   public void setFileHandler(FileHandler fileHandler) {
     this.fileHandler = fileHandler;
@@ -33,6 +35,7 @@ public class CmdParser {
     this.cmd = parser.parse(options, args);
     this.files = cmd.getArgList();
     this.appendMode = false;
+    this.type = StatisticsType.NONE;
   }
 
   public void createCmdOptions() {
@@ -53,47 +56,62 @@ public class CmdParser {
     }
     if (cmd.hasOption("a")) {
       setAppendMode(true);
-//    } if (cmd.hasOption("s")) {
-//      fileHandler.showShortStatistics();
-//    } if (cmd.hasOption("f")) {
-//      fileHandler.showFullStatistics();
+    }
+    if (cmd.hasOption("s")) {
+      type = StatisticsType.SHORT;
+    }
+    if (cmd.hasOption("f")) {
+      type = StatisticsType.FULL;
     }
   }
 
   public void parseCommand() throws IOException {
     parseFlags();
-    statistics = new Statistics();
+    setFileHandler(new FileHandler());
     for (String file : files) {
-      setFileHandler(new FileHandler());
+      if (!isAppendMode()) {
+        setFileHandler(new FileHandler());
+      }
       fileHandler.readFile(file);
       fileHandler.getScanner().close();
-      if (!isAppendMode()) {
-        statistics = new Statistics();
+    }
+    statistics = new Statistics(fileHandler);
+    for (String list : fileHandler.getExistingLists()) {
+      String filename = fileHandler.getPrefix() + list + ".txt";
+      try {
+        fileHandler.createFile(fileHandler.getDirectoryPath(), filename);
+      } catch (Exception e) {
+        System.out.println(e.getLocalizedMessage());
       }
-      for (String list : fileHandler.existingLists) {
-        String filename = fileHandler.getPrefix() + list + ".txt";
-        try {
-          fileHandler.createFile(fileHandler.getDirectoryPath(), filename);
-        } catch (Exception e) {
-          System.out.println(e.getLocalizedMessage());
-        }
-        fileHandler.setWriter(new FileWriter(
-            fileHandler.getDirectoryPath() + filename, isAppendMode()));
-        switch (list) {
-          case "integers":
-            fileHandler.writeIntegers(this.statistics);
-            break;
-          case "floats":
-            fileHandler.writeDoubles(this.statistics);
-            break;
-          case "strings":
-            fileHandler.writeStrings(this.statistics);
-            break;
-        }
-        statistics.calcIntsAvg();
-        fileHandler.getWriter().close();
+      fileHandler.setWriter(new FileWriter(
+          fileHandler.getDirectoryPath() + filename, isAppendMode()));
+      switch (list) {
+        case "integers":
+          fileHandler.writeIntegers(this.statistics);
+          break;
+        case "floats":
+          fileHandler.writeDoubles(this.statistics);
+          break;
+        case "strings":
+          fileHandler.writeStrings(this.statistics);
+          break;
+      }
+      statistics.calcIntsAvg();
+      statistics.calcDoublesAvg();
+      fileHandler.getWriter().close();
+    }
+
+    switch (type) {
+      case SHORT -> {
+        statistics.printShortIntsStatistics();
+        statistics.printShortDoublesStatistics();
+//        statistics.printShortStringsStatistics();
+      }
+      case FULL -> {
+        statistics.printFullIntsStatistics();
+        statistics.printFullDoublesStatistics();
+//        statistics.printFullStringsStatistics();
       }
     }
-    statistics.printFullIntsStatistics();
   }
 }

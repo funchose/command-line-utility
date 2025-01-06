@@ -1,6 +1,65 @@
 package org.study;
 
 public class Statistics {
+  private int numberOfStrings = 0;
+  private int numberOfInts = 0;
+  private int numberOfDoubles = 0;
+  private double doublesMin;
+  private double doublesMax;
+  private double doublesSum = 0;
+  private double doublesAvg = 0;
+  private int intsMin;
+  private int intsMax;
+  private int intsSum = 0;
+  private double intsAvg = 0;
+  private int minStrSize;
+  private int maxStrSize;
+  public Statistics(FileHandler fileHandler) {
+    if (fileHandler.getExistingLists().contains("integers")) {
+      this.intsMin = fileHandler.getIntegers().getFirst();
+      this.intsMax = fileHandler.getIntegers().getFirst();
+    }
+    if (fileHandler.getExistingLists().contains("floats")) {
+      this.doublesMin = fileHandler.getDoubles().getFirst();
+      this.doublesMax = fileHandler.getDoubles().getFirst();
+    }
+    if (fileHandler.getExistingLists().contains("strings")) {
+      this.minStrSize = fileHandler.getStrings().getFirst().length();
+      this.maxStrSize = fileHandler.getStrings().getFirst().length();
+    }
+  }
+  public double getDoublesMin() {
+    return doublesMin;
+  }
+
+  public void setDoublesMin(double doublesMin) {
+    this.doublesMin = doublesMin;
+  }
+
+  public double getDoublesMax() {
+    return doublesMax;
+  }
+
+  public void setDoublesMax(double doublesMax) {
+    this.doublesMax = doublesMax;
+  }
+
+  public double getDoublesSum() {
+    return doublesSum;
+  }
+
+  public void setDoublesSum(double doublesSum) {
+    this.doublesSum = doublesSum;
+  }
+
+  public double getDoublesAvg() {
+    return doublesAvg;
+  }
+
+  public void setDoublesAvg(double doublesAvg) {
+    this.doublesAvg = doublesAvg;
+  }
+
   public int getNumberOfStrings() {
     return numberOfStrings;
   }
@@ -17,44 +76,12 @@ public class Statistics {
     this.numberOfInts = numberOfInts;
   }
 
-  public int getNumberOfFloats() {
-    return numberOfFloats;
+  public int getNumberOfDoubles() {
+    return numberOfDoubles;
   }
 
-  public void setNumberOfFloats(int numberOfFloats) {
-    this.numberOfFloats = numberOfFloats;
-  }
-
-  public int getFloatsMin() {
-    return floatsMin;
-  }
-
-  public void setFloatsMin(int floatsMin) {
-    this.floatsMin = floatsMin;
-  }
-
-  public int getFloatsMax() {
-    return floatsMax;
-  }
-
-  public void setFloatsMax(int floatsMax) {
-    this.floatsMax = floatsMax;
-  }
-
-  public double getFloatsSum() {
-    return floatsSum;
-  }
-
-  public void setFloatsSum(double floatsSum) {
-    this.floatsSum = floatsSum;
-  }
-
-  public double getFloatsAvg() {
-    return floatsAvg;
-  }
-
-  public void setFloatsAvg(double floatsAvg) {
-    this.floatsAvg = floatsAvg;
+  public void setNumberOfDoubles(int numberOfFloats) {
+    this.numberOfDoubles = numberOfFloats;
   }
 
   public int getIntsMin() {
@@ -97,21 +124,7 @@ public class Statistics {
     this.maxStrSize = maxStrSize;
   }
 
-  private int numberOfStrings = 0;
-  private int numberOfInts = 0;
-  private int numberOfFloats = 0;
-  private int floatsMin = 0;
-  private int floatsMax = 0;
-  private double floatsSum = 0;
-  private double floatsAvg = 0;
-  private int intsMin = 0;
-  private int intsMax = 0;
-  private int intsSum = 0;
-  private double intsAvg = 0;
-  private int minStrSize = 0;
-  private int maxStrSize = 0;
-
-  public void getIntsStatistics(Integer integer) {
+  public void collectIntsStatistics(Integer integer) {
     setNumberOfInts(getNumberOfInts() + 1);
     setIntsSum(getIntsSum() + integer);
     if (integer > getIntsMax()) {
@@ -132,7 +145,32 @@ public class Statistics {
 
   public void printFullIntsStatistics() {
     printShortIntsStatistics();
-    System.out.printf("Min integer: %d%nMax integer: %d%nSum: %d%nAverage: %f%n",
+    System.out.printf("Min integer: %d%nMax integer: %d%nSum: %d%nAverage: %.2f%n",
         intsMin, intsMax, intsSum, intsAvg);
+  }
+  public void collectDoublesStatistics(Double doubleNum) {
+    setNumberOfDoubles(getNumberOfDoubles() + 1);
+    setDoublesSum(getDoublesSum() + doubleNum);
+    if (doubleNum > getDoublesMax()) {
+      setDoublesMax(doubleNum);
+    }
+    if (doubleNum < getDoublesMin()) {
+      setDoublesMin(doubleNum);
+    }
+  }
+
+  public void calcDoublesAvg() {
+    doublesAvg = doublesSum / numberOfDoubles;
+  }
+
+  public void printShortDoublesStatistics() {
+    System.out.printf("Number of floats: %d%n", numberOfDoubles);
+  }
+
+  public void printFullDoublesStatistics() {
+    printShortDoublesStatistics();
+    System.out.printf("Min float: %.2f%nMax float: %.2f%nSum: %.2f%nAverage: %.2f%n",
+        doublesMin, doublesMax, doublesSum, doublesAvg);
+
   }
 }
