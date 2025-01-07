@@ -17,6 +17,7 @@ public class CmdParser {
   private String directoryPath;
   private String prefix;
   private StatisticsType type;
+  private final HelpFormatter formatter;
 
   public void setFileHandler(FileHandler fileHandler) {
     this.fileHandler = fileHandler;
@@ -39,6 +40,7 @@ public class CmdParser {
     this.type = StatisticsType.NONE;
     this.directoryPath = "";
     this.prefix = "";
+    this.formatter = new HelpFormatter();
   }
 
   public void createCmdOptions() {
@@ -48,6 +50,7 @@ public class CmdParser {
         "instead of overwriting");
     options.addOption("s", false, "Show short statistics");
     options.addOption("f", false, "Show full statistics");
+    options.addOption("h", "help", false, "Show utility usage info");
   }
 
   public void parseCommand() throws IOException {
@@ -65,6 +68,12 @@ public class CmdParser {
   }
 
   public void parseFlags() {
+    if (cmd.hasOption("h")) {
+      formatter.printHelp("CommandLineUtility",
+          "This utility sorts input data into integers, floats and strings. " +
+              "To customize sorting, you can use the following options:",
+          options, "Please, report any issues to @funch0se.");
+    }
     if (cmd.hasOption("o")) {
       directoryPath = cmd.getOptionValue("o");
     }
