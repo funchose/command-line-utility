@@ -18,8 +18,6 @@ public class FileHandler {
   private final List<Integer> integers;
   private final List<Double> doubles;
   private final List<String> strings;
-  private String directoryPath;
-  private String prefix;
 
   private Scanner scanner;
 
@@ -30,24 +28,6 @@ public class FileHandler {
     this.doubles = new ArrayList<>();
     this.strings = new ArrayList<>();
     this.existingLists = new HashSet<>();
-    this.directoryPath = "";
-    this.prefix = "";
-  }
-
-  public String getPrefix() {
-    return prefix;
-  }
-
-  public void setPrefix(String prefix) {
-    this.prefix = prefix;
-  }
-
-  public String getDirectoryPath() {
-    return directoryPath;
-  }
-
-  public void setDirectoryPath(String directoryPath) {
-    this.directoryPath = directoryPath;
   }
 
   public FileWriter getWriter() {
@@ -83,8 +63,13 @@ public class FileHandler {
     scanner.useLocale(Locale.ENGLISH);
     while (scanner.hasNextLine()) {
       if (scanner.hasNextInt()) {
-        integers.add(Integer.parseInt(scanner.nextLine()));
-        existingLists.add("integers");
+        try {
+          integers.add(Integer.parseInt(scanner.nextLine()));
+          existingLists.add("integers");
+        } catch (NumberFormatException e) {
+          System.out.println("The input was incorrect. Please, read rules for data input." +
+              " Error has occurred in the file: " + filename);
+        }
       } else if (scanner.hasNextDouble()) {
         doubles.add(Double.parseDouble(scanner.nextLine()));
         existingLists.add("floats");
@@ -95,10 +80,15 @@ public class FileHandler {
     }
   }
 
-  public void createFile(String directoryPath, String filename) throws IOException {
-    Files.createDirectories(Paths.get(directoryPath));
-    var file = new File(directoryPath + filename);
-    file.createNewFile();
+  public void createFile(String directoryPath, String filename) {
+    try {
+      Files.createDirectories(Paths.get(directoryPath));
+      var file = new File(directoryPath + filename);
+      file.createNewFile();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+      System.exit(0);
+    }
   }
 
   public void writeIntegers(Statistics statistics) throws IOException {

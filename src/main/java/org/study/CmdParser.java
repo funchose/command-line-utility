@@ -1,5 +1,6 @@
 package org.study;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +14,10 @@ public class CmdParser {
   private FileHandler fileHandler;
   private final List<String> files;
   private boolean appendMode;
+  private String directoryPath;
+  private String prefix;
   private StatisticsType type;
+
   public void setFileHandler(FileHandler fileHandler) {
     this.fileHandler = fileHandler;
   }
@@ -33,6 +37,8 @@ public class CmdParser {
     this.files = cmd.getArgList();
     this.appendMode = false;
     this.type = StatisticsType.NONE;
+    this.directoryPath = "";
+    this.prefix = "";
   }
 
   public void createCmdOptions() {
@@ -45,8 +51,8 @@ public class CmdParser {
   }
 
   public void parseCommand() throws IOException {
-    parseFlags();
     fileHandler = new FileHandler();
+    parseFlags();
     readFiles();
     statistics = new Statistics(fileHandler);
     for (String list : fileHandler.getExistingLists()) {
@@ -60,10 +66,10 @@ public class CmdParser {
 
   public void parseFlags() {
     if (cmd.hasOption("o")) {
-      fileHandler.setDirectoryPath(cmd.getOptionValue("o"));
+      directoryPath = cmd.getOptionValue("o");
     }
     if (cmd.hasOption("p")) {
-      fileHandler.setPrefix(cmd.getOptionValue("p"));
+      prefix = cmd.getOptionValue("p");
     }
     if (cmd.hasOption("a")) {
       setAppendMode(true);
@@ -78,23 +84,24 @@ public class CmdParser {
 
   private void readFiles() throws FileNotFoundException {
     for (String file : files) {
-      if (!isAppendMode()) {
-        setFileHandler(new FileHandler());
+      var new_file = new File(file);
+      if (new_file.exists()) {
+        if (!isAppendMode()) {
+          setFileHandler(new FileHandler());
+        }
+        fileHandler.readFile(file);
+        fileHandler.getScanner().close();
+      } else {
+        System.out.println("File " + file + " is not found");
       }
-      fileHandler.readFile(file);
-      fileHandler.getScanner().close();
     }
   }
 
   private void createOutputFile(String list) throws IOException {
-    String filename = fileHandler.getPrefix() + list + ".txt";
-    try {
-      fileHandler.createFile(fileHandler.getDirectoryPath(), filename);
-    } catch (Exception e) {
-      System.out.println(e.getLocalizedMessage());
-    }
+    String filename = prefix + list + ".txt";
+    fileHandler.createFile(directoryPath, filename);
     fileHandler.setWriter(new FileWriter(
-        fileHandler.getDirectoryPath() + filename, isAppendMode()));
+        directoryPath + filename, isAppendMode()));
   }
 
   private void writeDataToFile(String list) throws IOException {

@@ -89,20 +89,22 @@ public class Statistics {
 
   public void printFullIntsStatistics() {
     printShortIntsStatistics();
-    System.out.printf("Min integer: %d%nMax integer: %d%nSum: %d%nAverage: %.2f%n",
+    System.out.printf("Min integer: %d%nMax integer: %d%nSum: %d%n" +
+            "Average: %.2f%n******************%n",
         intsMin, intsMax, intsSum, intsAvg);
   }
 
   public void printFullDoublesStatistics() {
     printShortDoublesStatistics();
-    System.out.printf("Min float: %.2f%nMax float: %.2f%nSum: %.2f%nAverage: %.2f%n",
+    System.out.printf("Min float: %.2f%nMax float: %.2f%nSum: %.2f%n" +
+            "Average: %.2f%n******************%n",
         doublesMin, doublesMax, doublesSum, doublesAvg);
 
   }
 
   public void printFullStringsStatistics() {
     printShortStringsStatistics();
-    System.out.printf("Min string length: %d%nMax string length: %d%n",
+    System.out.printf("Min string length: %d%nMax string length: %d%n******************%n",
         minStrSize, maxStrSize);
   }
 }
