@@ -93,8 +93,7 @@ public class CmdParser {
 
   private void readFiles() throws FileNotFoundException {
     for (String file : files) {
-      var new_file = new File(file);
-      if (new_file.exists()) {
+      if (new File(file).exists()) {
         if (!isAppendMode()) {
           setFileHandler(new FileHandler());
         }
