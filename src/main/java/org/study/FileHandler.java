@@ -1,9 +1,6 @@
 package org.study;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -85,7 +82,7 @@ public class FileHandler {
       Files.createDirectories(Paths.get(directoryPath));
       var file = new File(directoryPath + filename);
       file.createNewFile();
-    } catch (IOException e) {
+    } catch (IOException | IOError e) {
       System.out.println(e.getMessage());
       System.exit(0);
     }

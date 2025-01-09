@@ -75,7 +75,7 @@ public class CmdParser {
           options, "Please, report any issues to @funch0se.");
     }
     if (cmd.hasOption("o")) {
-      directoryPath = cmd.getOptionValue("o");
+      directoryPath = cmd.getOptionValue("o") + "/";
     }
     if (cmd.hasOption("p")) {
       prefix = cmd.getOptionValue("p");
