@@ -44,7 +44,7 @@
   </li>
 </ul>
   
-### Usage advices ###
+### Usage Advices ###
 <ul>
   <li>
     Recommended JDK version: JDK21
